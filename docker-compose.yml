@@ -1,0 +1,90 @@
+version: '3'
+
+services: 
+  backend:
+    build: 
+      context: .
+      dockerfile: .docker/apache/Dockerfile
+    image: backend-chat
+    container_name: backend-container
+    restart: unless-stopped
+    ports: 
+      - "8080:8080"
+    volumes: 
+      - ./backend:/var/www/html
+    environment: 
+      APACHE_LOG_DIR: /var/log/apache2
+      CONTAINER_ROLE: server
+    depends_on: 
+      - redis
+      - mysql
+    networks: 
+      - app-network
+
+  queue-worker:
+    build: 
+      context: .
+      dockerfile: .docker/apache/Dockerfile
+    image: queue-worker-chat
+    container_name: queue-worker-container
+    restart: unless-stopped
+    volumes: 
+      - ./backend:/var/www/html
+    environment: 
+      APACHE_LOG_DIR: /var/log/apache2
+      CONTAINER_ROLE: queue
+    depends_on: 
+      - redis
+      - mysql
+    networks: 
+      - app-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    restart: unless-stopped
+    ports: 
+      - "3306:3306"
+    volumes: 
+      - .docker/database:/var/lib/mysql
+    environment: 
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: chat
+      MYSQL_DATABASE: chat
+    networks: 
+      - app-network
+
+  redis:
+    build:
+      context: .docker/redis
+    container_name: redis-container
+    restart: unless-stopped
+    volumes: 
+      - .docker/redis/data:/data
+    networks: 
+      - app-network
+
+  composer:
+    image: composer:2.0
+    working_dir: /var/www/html
+    volumes: 
+      - ./backend:/var/www/html
+
+  artisan:
+    build: 
+      context: .docker/artisan
+    image: artisan-chat
+    container_name: artisan-container
+    working_dir: /var/www/html
+    entrypoint: ["php", "artisan"]
+    volumes: 
+      - ./backend:/var/www/html
+    depends_on: 
+      - mysql
+    networks: 
+      - app-network
+
+networks: 
+  app-network:
+    driver: bridge

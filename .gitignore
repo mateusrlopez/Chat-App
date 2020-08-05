@@ -1,0 +1,4 @@
+.docker/database
+.docker/redis/data
+.docker/echo/laravel-echo-server.lock
+.docker/echo/.env
