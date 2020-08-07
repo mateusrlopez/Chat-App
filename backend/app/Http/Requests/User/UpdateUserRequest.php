@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\User;
 
 use App\Traits\AuthorizedRequest;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class LoginRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     use AuthorizedRequest;
 
@@ -17,8 +18,8 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|exists:users',
-            'password' => 'required'
+            'name' => 'required',
+            'email' => ['required', 'email', Rule::unique('users')->ignore($this->route('user'))]
         ];
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Channel;
 
 use App\Traits\AuthorizedRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+class UpdateUserChannelRequest extends FormRequest
 {
     use AuthorizedRequest;
 
@@ -17,8 +17,7 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|exists:users',
-            'password' => 'required'
+            'admin' => 'required|boolean'
         ];
     }
 }

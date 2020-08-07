@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Traits\PublicRequest;
+use App\Traits\AuthorizedRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ResetPasswordRequest extends FormRequest
 {
-    use PublicRequest;
+    use AuthorizedRequest;
 
     /**
      * Get the validation rules that apply to the request.

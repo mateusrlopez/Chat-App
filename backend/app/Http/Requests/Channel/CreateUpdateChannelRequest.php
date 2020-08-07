@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Channel;
 
 use App\Traits\AuthorizedRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class SingUpRequest extends FormRequest
+class CreateUpdateChannelRequest extends FormRequest
 {
     use AuthorizedRequest;
 
@@ -17,10 +17,11 @@ class SingUpRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|unique:users',
             'name' => 'required',
-            'password' => 'required|confirmed',
-            'password_confirmation' => 'required'
+            'description' => 'present|nullable',
+            'private' => 'required|boolean',
+            'tags' => 'required|array',
+            'tags.*' => 'nullable'
         ];
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-trait PublicRequest
+trait AuthorizedRequest
 {
     public function authorize()
     {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Broadcasting\ChatRoomChannel;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -13,4 +14,4 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-
+Broadcast::channel('Channel.{channel}', ChatRoomChannel::class);

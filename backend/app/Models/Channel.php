@@ -12,6 +12,7 @@ class Channel extends Model
     ];
 
     protected $casts = [
+        'private' => 'boolean',
         'tags' => 'array'
     ];
 

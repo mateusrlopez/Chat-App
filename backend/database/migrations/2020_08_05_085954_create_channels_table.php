@@ -16,7 +16,7 @@ class CreateChannelsTable extends Migration
         Schema::create('channels', function (Blueprint $table) {
             $table->id();
             $table->string('name', 60);
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->constrained();
             $table->text('description')->nullable();
             $table->boolean('private');
             $table->json('tags');

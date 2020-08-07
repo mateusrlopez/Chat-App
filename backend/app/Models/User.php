@@ -6,6 +6,7 @@ use App\Mail\ResetPasswordMail;
 use App\Models\Pivot\UserChannel;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -41,6 +42,11 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
+
     public function sendPasswordResetNotification($token)
     {
         $url = config('app.url') . "/reset-password?email={$this->email}&token=$token";
@@ -51,9 +57,19 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Message::class);
     }
+    
+    public function ownedChannels()
+    {
+        return $this->hasMany(ChanneL::class);
+    }
 
     public function channels()
     {
         return $this->belongsToMany(Channel::class)->withPivot(['admin'])->withTimestamps()->using(UserChannel::class);
+    }
+
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'notifiable')->orderBy('created_at', 'desc');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMessagesTable extends Migration
+class CreateChannelInvitesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateMessagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('messages', function (Blueprint $table) {
+        Schema::create('invites', function (Blueprint $table) {
             $table->id();
-            $table->text('content');
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('inviter_id')->constrained('users');
+            $table->foreignId('invited_id')->constrained('users');
             $table->foreignId('channel_id')->constrained();
+            $table->dateTime('expiration');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateMessagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('messages');
+        Schema::dropIfExists('invites');
     }
 }
