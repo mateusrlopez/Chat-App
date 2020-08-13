@@ -67,6 +67,7 @@ services:
 
   composer:
     image: composer:2.0
+    container_name: composer-container
     working_dir: /var/www/html
     volumes: 
       - ./backend:/var/www/html

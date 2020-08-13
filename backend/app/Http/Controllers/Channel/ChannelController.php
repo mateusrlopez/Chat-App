@@ -6,17 +6,24 @@ use App\Http\Controllers\PrivateController;
 use App\Http\Requests\Channel\CreateUpdateChannelRequest;
 use App\Models\Channel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ChannelController extends PrivateController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->authorizeResource(Channel::class, 'channel', ['except' => ['index', 'store']]);    
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function public()
+    public function index()
     {
-        return Channel::where('private', false)->withCount('users')->get();
+        return Channel::filterQuery()->withCount('users')->get();
     }
 
     /**
@@ -25,9 +32,15 @@ class ChannelController extends PrivateController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateUpdateChannelRequest $request)
+    public function store(CreateUpdateChannelRequest $request) 
     {
-        $channel = Channel::create($request->validated() + ['user_id' => Auth::id()]);
+        $channel = null;
+        
+        DB::transaction(function () use ($request, &$channel) {
+            $channel = Channel::create($request->validated());
+            $channel->users()->attach(Auth::id());
+        });
+
         return response()->json($channel, 201);
     }
 

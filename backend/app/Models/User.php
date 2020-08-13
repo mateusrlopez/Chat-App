@@ -15,13 +15,11 @@ class User extends Authenticatable implements JWTSubject
     use Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are not mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -58,11 +56,6 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Message::class);
     }
     
-    public function ownedChannels()
-    {
-        return $this->hasMany(ChanneL::class);
-    }
-
     public function channels()
     {
         return $this->belongsToMany(Channel::class)->withPivot(['admin'])->withTimestamps()->using(UserChannel::class);
@@ -71,5 +64,10 @@ class User extends Authenticatable implements JWTSubject
     public function notifications()
     {
         return $this->morphMany(Notification::class, 'notifiable')->orderBy('created_at', 'desc');
+    }
+
+    public function invitesReceived()
+    {
+        return $this->belongsTo(Invite::class, 'invited_id');
     }
 }

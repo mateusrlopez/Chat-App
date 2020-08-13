@@ -39,4 +39,9 @@ class MessageDeleted implements ShouldBroadcast
     {
         return 'message.deleted';
     }
+
+    public function broadcastWith()
+    {
+        return ['id' => $this->message->id];
+    }
 }

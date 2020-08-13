@@ -14,8 +14,8 @@ class CreateUserChannelTable extends Migration
     public function up()
     {
         Schema::create('user_channel', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('channel_id')->constrained();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('channel_id')->constrained()->onDelete('cascade');
             $table->boolean('admin')->default(0);
             $table->timestamps();
         });

@@ -39,4 +39,9 @@ class MessageCreated implements ShouldBroadcast
     {
         return 'message.created';
     }
+
+    public function broadcastWith()
+    {
+        return ['id' => $this->message->id, 'content' => $this->message->content, 'created_at' => $this->message->created_at];
+    }
 }

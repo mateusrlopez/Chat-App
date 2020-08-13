@@ -20,7 +20,8 @@ class CreateUpdateChannelRequest extends FormRequest
             'name' => 'required',
             'description' => 'present|nullable',
             'private' => 'required|boolean',
-            'tags' => 'required|array',
+            'owner_id' => 'required|exists:users,id',
+            'tags' => 'array|nullable',
             'tags.*' => 'nullable'
         ];
     }

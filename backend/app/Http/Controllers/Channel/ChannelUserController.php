@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Channel;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\PrivateController;
 use App\Http\Requests\Channel\AttachUserChannelRequest;
 use App\Http\Requests\Channel\UpdateUserChannelRequest;
@@ -29,7 +28,7 @@ class ChannelUserController extends PrivateController
         return response()->json('', 204);
     }
 
-    public function delete(Channel $channel, User $user)
+    public function destroy(Channel $channel, User $user)
     {
         $channel->users()->detach($user->id);
         return response()->json('', 204);

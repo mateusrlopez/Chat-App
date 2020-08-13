@@ -19,7 +19,7 @@ class ChannelPolicy
      */
     public function view(User $user, Channel $channel)
     {
-        return !$channel->private or $channel->users->pluck('user_id')->contains($user->id);
+        return $channel->users->pluck('user_id')->contains($user->id);
     }
 
     /**
@@ -44,10 +44,5 @@ class ChannelPolicy
     public function delete(User $user, Channel $channel)
     {
         return $channel->owner->is($user);
-    }
-
-    public function manageInvites(User $user, Channel $channel)
-    {
-        return $channel->owner->is($user) or $channel->administrators->pluck('user_id')->contains($user->id);
     }
 }

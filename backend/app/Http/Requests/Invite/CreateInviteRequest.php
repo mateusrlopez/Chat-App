@@ -19,7 +19,6 @@ class CreateInviteRequest extends FormRequest
     {
         return [
             'invited_id' => 'required|exists:users,id|different:'.Auth::id(),
-            'channel_id' => 'required|exists:channels,id',
             'expiration' => 'required|date|after_or_equal:today'
         ];
     }

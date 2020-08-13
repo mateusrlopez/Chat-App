@@ -15,9 +15,9 @@ class CreateChannelInvitesTable extends Migration
     {
         Schema::create('invites', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('inviter_id')->constrained('users');
-            $table->foreignId('invited_id')->constrained('users');
-            $table->foreignId('channel_id')->constrained();
+            $table->foreignId('inviter_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('invited_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('channel_id')->constrained()->onDelete('cascade');
             $table->dateTime('expiration');
             $table->timestamps();
         });

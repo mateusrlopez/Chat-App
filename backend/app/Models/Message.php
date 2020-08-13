@@ -9,9 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-    protected $fillable = [
-        'content', 'user_id', 'channel_id'
-    ];
+    /**
+     * The attributes that are not mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [];
+
+    protected $appends = ['links'];
     
     protected $dispatchesEvents = [
         'created' => MessageCreated::class,

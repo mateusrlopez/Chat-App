@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Channel;
+use App\Models\Message;
+use App\Policies\ChannelPolicy;
+use App\Policies\MessagePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -13,7 +16,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
+        Channel::class => ChannelPolicy::class,
+        Message::class => MessagePolicy::class
     ];
 
     /**
@@ -24,7 +28,5 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        //
     }
 }

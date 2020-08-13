@@ -11,19 +11,19 @@ class UserInviteController extends PrivateController
 {
     public function index(User $user)
     {
-        return $user->invitesReceived;
+        return Invite::filterQuery()->get();
     }
 
     public function accept(Invite $invite)
     {
         DB::transaction(function () use ($invite){
-            $invite->channel->users()->attach($invite->userReceived->id);
+            $invite->channel->users()->attach($invite->invited->id);
             $invite->delete();
         });
         return response()->json('', 204);
     }
 
-    public function refuse(Invite $invite)
+    public function destroy(Invite $invite)
     {
         $invite->delete();
         return response()->json('', 204);

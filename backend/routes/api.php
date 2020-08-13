@@ -21,15 +21,15 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/reset-password', 'Auth\PasswordController@resetPassword');
 });
 
-Route::apiResource('channels', 'Channel\ChannelController')->except('index');
-Route::apiResource('channels.messages', 'Channel\ChannelMessageController')->shallow();
-Route::apiResource('channels.invites', 'Channel\ChannelInviteController')->except(['show', 'update'])->shallow();
-Route::apiResource('channels.users', 'Channel\ChannelInviteController')->except('show');
+Route::apiResource('channels', 'Channel\ChannelController');
+Route::apiResource('channels.messages', 'Channel\ChannelMessageController')->only(['index', 'store']);
+Route::apiResource('channels.invites', 'Channel\ChannelInviteController')->only(['index', 'store']);
+Route::apiResource('channels.users', 'Channel\ChannelUserController')->except('show');
 Route::apiResource('users', 'User\UserController')->except(['store', 'show']);
 Route::apiResource('users.channel', 'User\UserChannelController')->only('index');
 Route::apiResource('users.invites', 'User\UserInviteController')->only('index');
-Route::get('/channels/public', 'Channel\ChannelController@public');
-Route::group(['prefix' => '/invites/{invite}'], function() {
-    Route::put('/accept', 'User\UserInviteController@accept');
-    Route::put('/refuse', 'User\UserInviteController@refuse');
+Route::apiResource('messages', 'Message\MessageController')->only(['update', 'destroy']);
+Route::apiResource('invites', 'Invite\InviteController')->only('destroy');
+Route::group(['prefix' => 'invites/{invite}'], function() {
+    Route::put('accept', 'Invite\InviteController@accept');
 });
