@@ -27,7 +27,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = [
-        'password'
+        'password', 'created_at', 'updated_at'
     ];
 
     public function getJWTIdentifier()
@@ -58,7 +58,7 @@ class User extends Authenticatable implements JWTSubject
     
     public function channels()
     {
-        return $this->belongsToMany(Channel::class)->withPivot(['admin'])->withTimestamps()->using(UserChannel::class);
+        return $this->belongsToMany(Channel::class)->withPivot(['admin', 'last_activity'])->withTimestamps()->using(UserChannel::class);
     }
 
     public function notifications()

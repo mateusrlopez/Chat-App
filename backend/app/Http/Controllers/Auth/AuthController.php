@@ -20,7 +20,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         if(!$token = Auth::attempt($request->validated()))
-            return response()->json('Invalid credentials', 422);
+            return response()->json(['errors' => 'Invalid credentials'], 422);
 
         return response()->json(['token' => $token, 'user' => Auth::user()]);
     }

@@ -15,8 +15,6 @@ class Message extends Model
      * @var array
      */
     protected $guarded = [];
-
-    protected $appends = ['links'];
     
     protected $dispatchesEvents = [
         'created' => MessageCreated::class,

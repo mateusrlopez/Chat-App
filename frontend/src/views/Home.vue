@@ -1,17 +1,17 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <h1> {{ currentUser.name }} </h1>
   </div>
 </template>
 
 <script>
-import HelloWorld from '@/components/HelloWorld.vue'
+import { mapGetters } from 'vuex'
 
 export default {
-  name: 'Home',
-  components: {
-    HelloWorld
+  computed: {
+    ...mapGetters([
+      'currentUser'
+    ])
   }
 }
 </script>

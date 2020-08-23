@@ -52,6 +52,7 @@ class ChannelController extends PrivateController
      */
     public function show(Channel $channel)
     {
+        $channel->users()->updateExistingPivot(Auth::id(), ['last_activity' => now()]);
         return $channel;
     }
 

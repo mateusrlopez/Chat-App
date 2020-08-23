@@ -33,7 +33,7 @@ class Channel extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'user_channel')->withPivot(['admin'])->withTimestamps()->using(UserChannel::class);
+        return $this->belongsToMany(User::class, 'user_channel')->withPivot(['admin', 'last_activity'])->withTimestamps()->using(UserChannel::class);
     }
 
     public function administrators()
