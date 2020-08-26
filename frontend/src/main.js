@@ -7,6 +7,8 @@ import io from 'socket.io-client'
 import Vuelidate from 'vuelidate'
 
 import '@/assets/css/style.css'
+import '@fortawesome/fontawesome-free/css/all.css'
+import '@fortawesome/fontawesome-free/js/all'
 
 Vue.config.productionTip = false
 
@@ -16,11 +18,7 @@ window.io = io
 window.Echo = new Echo({
   broadcaster: 'socket.io',
   host: window.location.hostname,
-  auth: {
-    headers: {
-      Authorization: `Bearer ${window.localStorage.getItem('access_token')}`
-    }
-  }
+  enabledTransports: ['websocket']
 })
 
 new Vue({

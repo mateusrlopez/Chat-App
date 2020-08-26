@@ -6,6 +6,7 @@ use App\Filters\PrivateFilter;
 use App\Models\Pivot\UserChannel;
 use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Redis;
 
 class Channel extends Model
 {
@@ -20,11 +21,19 @@ class Channel extends Model
 
     protected $hidden = ['updated_at'];
 
+    protected $appends = ['online_users_count'];
+
     protected $casts = [
         'private' => 'boolean',
         'tags' => 'array',
         'created_at' => 'date:d/m/Y'
     ];
+
+    public function getOnlineUsersCountAttribute()
+    {
+        $arrayUsers = json_decode(Redis::get("presence-Channel.{$this->id}:members"));
+        return $arrayUsers ? count($arrayUsers) : 0;
+    }
 
     public function messages()
     {

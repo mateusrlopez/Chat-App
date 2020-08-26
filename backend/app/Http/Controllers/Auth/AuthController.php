@@ -22,7 +22,7 @@ class AuthController extends Controller
         if(!$token = Auth::attempt($request->validated()))
             return response()->json(['errors' => 'Invalid credentials'], 422);
 
-        return response()->json(['token' => $token, 'user' => Auth::user()]);
+        return response()->json(['token' => $token]);
     }
 
     public function logout()
@@ -38,6 +38,6 @@ class AuthController extends Controller
         $user = User::create(Arr::only($validatedData, ['email', 'name', 'password']));
         $token = Auth::login($user);
 
-        return response()->json(['token' => $token, 'user' => $user], 201);
+        return response()->json(['token' => $token], 201);
     }
 }

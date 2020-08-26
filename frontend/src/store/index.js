@@ -1,20 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import api from '@/services/api'
+import { saveToken, getUserFromToken } from '@/services/auth'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: {},
-    errors: {}
+    token: window.localStorage.getItem('access_token') || null
   },
   mutations: {
-    setUser (state, user) {
-      state.user = user
-    },
-    setErrors (state, error) {
-      state.errors = error
+    setToken (state, token) {
+      state.token = token
     }
   },
   actions: {
@@ -22,12 +19,12 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         api.post('/auth/login', payload)
           .then(response => {
-            window.localStorage.setItem('access_token', response.data.token)
-            commit('setUser', response.data.user)
+            console.log(response.data)
+            saveToken(response.data.token)
+            commit('setToken', response.data.token)
             resolve(response)
           })
           .catch(error => {
-            commit('setErrors', error.response.data.errors)
             reject(error)
           })
       })
@@ -36,12 +33,11 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         api.post('/auth/sign-up', payload)
           .then(response => {
-            window.localStorage.setItem('access_token', response.data.token)
-            commit('setUser', response.data)
+            saveToken(response.data.token)
+            commit('setToken', response.data.token)
             resolve(response)
           })
           .catch(error => {
-            commit('setErrors', error.response.data.errors)
             reject(error)
           })
       })
@@ -50,20 +46,19 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         api.post('/auth/reset-password', payload)
           .then(response => {
-            window.localStorage.setItem('access_token', response.data.token)
-            commit('setUser', response.data)
+            saveToken(response.data.token)
+            commit('setToken', response.data.token)
             resolve(response)
           })
           .catch(error => {
-            commit('setErrors', error.response.data.errors)
             reject(error)
           })
       })
     }
   },
   getters: {
-    currentUser: state => state.user,
-    getErrors: state => state.errors
+    currentUser: state => getUserFromToken(state.token),
+    getAuthHeader: state => ({ Authorization: `Bearer ${state.token}` })
   },
   modules: {
   }

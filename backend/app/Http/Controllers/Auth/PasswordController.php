@@ -18,8 +18,8 @@ class PasswordController extends Controller
         $response = $this->broker()->sendResetLink($request->only(['email']));
 
         return $response === Password::RESET_LINK_SENT ? 
-            response()->json('Password reset e-mail sent sucessfully') : 
-            response()->json('Error sending reset mail, check if you haven\'t requested already', 400);
+            response()->json('Password reset email sent sucessfully') : 
+            response()->json(['errors' => 'Error sending reset mail, check if you haven\'t requested already'], 400);
     }
 
     public function resetPassword(ResetPasswordRequest $request)
@@ -35,8 +35,8 @@ class PasswordController extends Controller
         });
 
         return $response === Password::PASSWORD_RESET ?
-            response()->json(['token' => $jwtToken, 'user' => Auth::user()]) :
-            response()->json('Error during password reset', 400);
+            response()->json(['token' => $jwtToken]) :
+            response()->json(['errors' => 'Error during password reset'], 400);
     }
 
     private function broker()

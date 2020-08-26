@@ -12,23 +12,23 @@ const routes = [
       {
         path: 'sign-up',
         name: 'SignUp',
-        component: () => import('@/components/SignUpForm.vue')
+        component: () => import('@/components/forms/SignUpForm.vue')
       },
       {
         path: 'recover-password',
         name: 'RecoverPassword',
-        component: () => import('@/components/RecoverPasswordForm.vue')
+        component: () => import('@/components/forms/RecoverPasswordForm.vue')
       },
       {
         path: 'reset-password',
         name: 'ResetPassword',
         props: route => ({ email: route.query.email, token: route.query.token }),
-        component: () => import('@/components/ResetPasswordForm.vue')
+        component: () => import('@/components/forms/ResetPasswordForm.vue')
       },
       {
         path: '',
         name: 'Login',
-        component: () => import('@/components/LoginForm.vue')
+        component: () => import('@/components/forms/LoginForm.vue')
       }
     ]
   },
@@ -43,6 +43,7 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
+  scrollBehavior: (to, from, savedPosition) => savedPosition || { x: 0, y: 0 },
   routes
 })
 

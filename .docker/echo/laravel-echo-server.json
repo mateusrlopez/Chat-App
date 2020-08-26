@@ -1,5 +1,5 @@
 {
-	"authHost": "http://backend",
+	"authHost": "http://backend:8080",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [],
 	"database": "redis",
@@ -7,9 +7,10 @@
 		"redis": {
 			"host": "redis",
             "port": "6379"
-		}
+        },
+        "publishPresence": true
 	},
-	"devMode": false,
+	"devMode": true,
 	"host": null,
 	"port": "6001",
 	"protocol": "http",

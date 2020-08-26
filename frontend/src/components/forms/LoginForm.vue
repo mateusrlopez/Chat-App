@@ -1,9 +1,11 @@
 <template>
-  <div class="w-full md:w-9/12 p-5 md:shadow-xl bg-white md:rounded-lg">
+  <div class="w-full md:w-3/4 p-5 md:shadow-2xl bg-white md:rounded-lg">
+    <AlertBox v-if="errors" error :message="errors" @clear-alert="errors=null"/>
+
     <form @submit.prevent="submitLoginForm">
       <div class="my-2">
-        <label :class="['block', 'cursor-pointer', !$v.email.$error ? 'text-black' : 'text-red-500']" for="email">Email:</label>
-        <input :class="['w-full', 'border', !$v.email.$error ? 'border-gray-500' : 'border-red-500', 'px-2', 'py-1', 'rounded', 'mt-1']" id="email" type="text" v-model.lazy.trim="email" autocomplete="off">
+        <label :class="['cursor-pointer', !$v.email.$error ? 'text-black' : 'text-red-500']" for="email">Email:</label>
+        <input :class="['w-full', 'border', !$v.email.$error ? 'border-gray-700' : 'border-red-500', 'px-2', 'py-1', 'rounded', 'mt-1']" id="email" type="text" v-model.lazy.trim="email" autocomplete="off">
         <small class="text-red-500" v-if="$v.email.$error && !$v.email.required">Email is required</small>
         <small class="text-red-500" v-if="$v.email.$error && !$v.email.email">Enter a valid email</small>
       </div>
@@ -11,7 +13,7 @@
       <div class="mt-2 mb-4">
         <label :class="['cursor-pointer', !$v.password.$error ? 'text-black' : 'text-red-500']" for="password">Password:</label>
         <router-link class="float-right text-sm text-blue-600" tag="a" to="/recover-password">Forgot your password?</router-link>
-        <input :class="['w-full', 'border', !$v.password.$error ? 'border-gray-500' : 'border-red-500', 'px-2', 'py-1', 'rounded', 'mt-1']" id="password" type="password" v-model.lazy.trim="password">
+        <input :class="['w-full', 'border', !$v.password.$error ? 'border-gray-700' : 'border-red-500', 'px-2', 'py-1', 'rounded', 'mt-1']" id="password" type="password" v-model.lazy.trim="password">
         <small class="text-red-500" v-if="$v.password.$error && !$v.password.required">Password is required</small>
       </div>
 
@@ -27,10 +29,14 @@ import { mapActions } from 'vuex'
 import { required, email } from 'vuelidate/lib/validators'
 
 export default {
+  components: {
+    AlertBox: () => import('@/components/AlertBox.vue')
+  },
   data () {
     return {
       email: '',
-      password: ''
+      password: '',
+      errors: null
     }
   },
   validations: {
@@ -53,6 +59,9 @@ export default {
         this.login({ email: this.email, password: this.password })
           .then(() => {
             this.$router.push('/home')
+          })
+          .catch(error => {
+            this.errors = error.response.data.errors
           })
       }
     }
