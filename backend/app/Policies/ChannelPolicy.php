@@ -45,4 +45,14 @@ class ChannelPolicy
     {
         return $channel->owner->is($user);
     }
+
+    public function accessRelated(User $user, Channel $channel)
+    {
+        return $channel->users->pluck('id')->contains($user->id);
+    }
+
+    public function manageRelated(User $user, Channel $channel)
+    {
+        return $channel->owner->is($user) or $channel->administrators->pluck('user_id')->contains($user->id);
+    }
 }

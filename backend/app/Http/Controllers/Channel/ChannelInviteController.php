@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Auth;
 
 class ChannelInviteController extends PrivateController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->authorizeResource(Channel::class, 'channel');
+    }
+
     public function index(Channel $channel)
     {
         return $channel->invites;
@@ -18,5 +24,18 @@ class ChannelInviteController extends PrivateController
     {
         $invite = $channel->invites()->create($request->validated() + ['inviter_id' => Auth::id()]);
         return response()->json($invite, 201);
+    }
+
+    protected function resourceAbilityMap()
+    {
+        return [
+            'index' => 'manageRelated',
+            'store' => 'manageRelated'
+        ];
+    }
+
+    protected function resourceMethodsWithoutModels()
+    {
+        return [];
     }
 }

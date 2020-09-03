@@ -13,7 +13,7 @@ class MessageCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $message;
+    private $message;
 
     /**
      * Create a new event instance.
@@ -42,6 +42,6 @@ class MessageCreated implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        return ['id' => $this->message->id, 'content' => $this->message->content, 'created_at' => $this->message->created_at];
+        return ['id' => $this->message->id, 'author' => $this->message->user->name, 'content' => $this->message->content, 'created_at' => $this->message->created_at];
     }
 }

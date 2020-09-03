@@ -11,7 +11,7 @@
         <small class="text-red-500" v-if="$v.email.$error && !$v.email.email">Enter a valid email</small>
       </div>
 
-      <button class="w-full p-1 bg-teal-500 text-white rounded hover:bg-teal-600" type="submit">Request</button>
+      <LoadingButton label="Request" class="w-full p-1 bg-teal-500 text-white rounded hover:bg-teal-600" type="submit" />
     </form>
   </div>
 </template>
@@ -22,7 +22,8 @@ import api from '@/services/api'
 
 export default {
   components: {
-    AlertBox: () => import('@/components/AlertBox.vue')
+    AlertBox: () => import('@/components/AlertBox.vue'),
+    LoadingButton: () => import('@/components/LoadingButton.vue')
   },
   data () {
     return {

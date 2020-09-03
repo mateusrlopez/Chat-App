@@ -13,7 +13,7 @@ class MessageEdited implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $message;
+    private $message;
 
     /**
      * Create a new event instance.

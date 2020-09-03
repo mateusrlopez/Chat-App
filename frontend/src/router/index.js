@@ -5,6 +5,26 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/home',
+    meta: { private: true },
+    name: 'Home',
+    component: () => import('@/views/Home.vue')
+  },
+  {
+    path: '/channel/:id(\\d+)',
+    meta: { private: true },
+    name: 'Channel',
+    props: route => ({ id: +route.params.id }),
+    component: () => import('@/views/Channel.vue')
+  },
+  {
+    path: '/profile/:id(\\d+)',
+    meta: { private: true },
+    name: 'Profile',
+    props: route => ({ id: +route.params.id }),
+    component: () => import('@/views/Profile.vue')
+  },
+  {
     path: '/',
     meta: { private: false },
     component: () => import('@/views/Index.vue'),
@@ -31,28 +51,21 @@ const routes = [
         component: () => import('@/components/forms/LoginForm.vue')
       }
     ]
-  },
-  {
-    path: '/home',
-    name: 'Home',
-    meta: { private: true },
-    component: () => import('@/views/Home.vue')
   }
 ]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  scrollBehavior: (to, from, savedPosition) => savedPosition || { x: 0, y: 0 },
   routes
 })
 
 router.beforeEach((to, from, next) => {
-  const routes = to.matched.some(val => !val.meta.private)
+  const routes = to.matched.some(val => val.meta.private)
 
-  if (routes && window.localStorage.getItem('access_token')) {
+  if (!routes && window.localStorage.getItem('access_token')) {
     next('/home')
-  } else if (!routes && !window.localStorage.getItem('access_token')) {
+  } else if (routes && !window.localStorage.getItem('access_token')) {
     next('/')
   } else {
     next()

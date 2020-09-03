@@ -14,20 +14,10 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
-    /**
-     * The attributes that are not mass assignable.
-     *
-     * @var array
-     */
     protected $guarded = [];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
-        'password', 'created_at', 'updated_at'
+        'password'
     ];
 
     public function getJWTIdentifier()
@@ -37,9 +27,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function getJWTCustomClaims()
     {
-        return [
-            'name' => $this->name
-        ];
+        return [];
     }
 
     public function setPasswordAttribute($value)
@@ -71,5 +59,20 @@ class User extends Authenticatable implements JWTSubject
     public function invitesReceived()
     {
         return $this->belongsTo(Invite::class, 'invited_id');
+    }
+
+    public function friends()
+    {
+        return $this->belongsToMany(self::class, 'friendships', null, 'friend_id')->withTimestamps();
+    }
+
+    public function friendshipRequestsSent()
+    {
+        return $this->hasMany(FriendshipRequest::class, 'sender_id');
+    }
+
+    public function friendshipRequestsReceived()
+    {
+        return $this->hasMany(FriendshipRequest::class, 'receiver_id');
     }
 }

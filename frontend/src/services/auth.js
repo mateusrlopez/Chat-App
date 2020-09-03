@@ -1,15 +1,13 @@
-import jwtDecode from 'jwt-decode'
+import api from './api'
 
-export const saveToken = token => {
+export const saveAuth = (token, user) => {
   window.localStorage.setItem('access_token', token)
+  window.localStorage.setItem('user', JSON.stringify(user))
   window.Echo.connector.options.auth.headers.Authorization = token
+  api.defaults.headers.common.Authorization = `Bearer ${token}`
 }
 
-export const getUserFromToken = token => {
-  const tokenData = jwtDecode(token)
-  return { id: tokenData.sub, name: tokenData.name }
-}
-
-export const destroyToken = () => {
+export const destroyAuth = () => {
   window.localStorage.removeItem('access_token')
+  window.localStorage.removeItem('user')
 }

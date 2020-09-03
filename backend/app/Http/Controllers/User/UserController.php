@@ -8,6 +8,12 @@ use App\Models\User;
 
 class UserController extends PrivateController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->authorizeResource(User::class, 'user', ['except' => ['index']]);  
+    }
+
     public function index()
     {
         return User::all();

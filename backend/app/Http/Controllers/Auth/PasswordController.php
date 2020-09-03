@@ -35,7 +35,7 @@ class PasswordController extends Controller
         });
 
         return $response === Password::PASSWORD_RESET ?
-            response()->json(['token' => $jwtToken]) :
+            response()->json(['token' => $jwtToken, 'user' => Auth::user()]) :
             response()->json(['errors' => 'Error during password reset'], 400);
     }
 

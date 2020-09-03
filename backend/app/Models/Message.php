@@ -9,17 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-    /**
-     * The attributes that are not mass assignable.
-     *
-     * @var array
-     */
     protected $guarded = [];
     
     protected $dispatchesEvents = [
         'created' => MessageCreated::class,
-        'updated' => MessageEdited::class,
-        'deleted' => MessageDeleted::class
+        'deleted' => MessageDeleted::class,
+        'updated' => MessageEdited::class
     ];
 
     public function user()

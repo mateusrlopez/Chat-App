@@ -17,7 +17,7 @@
         <small class="text-red-500" v-if="$v.password.$error && !$v.password.required">Password is required</small>
       </div>
 
-      <button class="w-full p-1 bg-teal-500 text-white rounded hover:bg-teal-600" type="submit">Login</button>
+      <LoadingButton label="Login" class="w-full p-1 bg-teal-500 text-white rounded hover:bg-teal-600" type="submit" />
     </form>
 
     <router-link class="block mt-3 text-blue-600 text-sm" tag="a" to="/sign-up">Doesn't have an account?</router-link>
@@ -25,12 +25,13 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { required, email } from 'vuelidate/lib/validators'
 
 export default {
   components: {
-    AlertBox: () => import('@/components/AlertBox.vue')
+    AlertBox: () => import('@/components/AlertBox.vue'),
+    LoadingButton: () => import('@/components/LoadingButton.vue')
   },
   data () {
     return {
@@ -38,6 +39,11 @@ export default {
       password: '',
       errors: null
     }
+  },
+  computed: {
+    ...mapGetters([
+      'isLoading'
+    ])
   },
   validations: {
     email: {

@@ -1,10 +1,11 @@
+import Echo from 'laravel-echo'
+import io from 'socket.io-client'
 import Vue from 'vue'
+import Vuelidate from 'vuelidate'
+
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import Echo from 'laravel-echo'
-import io from 'socket.io-client'
-import Vuelidate from 'vuelidate'
 
 import '@/assets/css/style.css'
 import '@fortawesome/fontawesome-free/css/all.css'

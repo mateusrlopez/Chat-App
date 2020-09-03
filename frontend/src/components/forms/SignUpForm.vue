@@ -22,14 +22,14 @@
         <small class="text-red-500" v-if="$v.password.$error && !$v.password.minLength">Password must have at least 8 characters</small>
       </div>
 
-      <div class="my-2">
+      <div class="mt-2 mb-4">
         <label :class="['cursor-pointer', !$v.password_confirmation.$error ? 'text-black' : 'text-red-500']" for="password_confirmation">Confirm your password:</label>
         <input :class="['w-full', 'border', !$v.password_confirmation.$error ? 'border-gray-700' : 'border-red-500', 'px-2', 'py-1', 'rounded', 'mt-1']" id="password_confirmation" type="password" v-model.lazy.trim="password_confirmation">
         <small class="text-red-500" v-if="$v.password_confirmation.$error && !$v.password_confirmation.required">You must confirm your password</small>
         <small class="text-red-500" v-if="$v.password_confirmation.$error && !$v.password_confirmation.sameAs">Passwords don't match</small>
       </div>
 
-      <button class="my-2 w-full bg-teal-500 hover:bg-teal-600 text-white rounded py-1" type="submit">Sign Up</button>
+      <LoadingButton label="Sign Up" class="w-full p-1 bg-teal-500 text-white rounded hover:bg-teal-600" type="submit" />
     </form>
   </div>
 </template>
@@ -39,13 +39,15 @@ import { mapActions } from 'vuex'
 import { required, email, minLength, sameAs } from 'vuelidate/lib/validators'
 
 export default {
+  components: {
+    LoadingButton: () => import('@/components/LoadingButton.vue')
+  },
   data () {
     return {
       email: '',
       name: '',
       password: '',
       password_confirmation: '',
-      password_strength: '',
       errors: {
         email: null
       }
@@ -81,7 +83,7 @@ export default {
             this.$router.push('/home')
           })
           .catch(error => {
-            this.errors = Object.assign(this.errors, error.response.data.errors)
+            this.errors = error.response.data.errors
           })
       }
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Filters\WithoutMemberFilter;
 use App\Filters\PrivateFilter;
 use App\Models\Pivot\UserChannel;
 use App\Traits\Filterable;
@@ -12,21 +13,19 @@ class Channel extends Model
 {
     use Filterable;
 
-    /**
-     * The attributes that are not mass assignable.
-     *
-     * @var array
-     */
     protected $guarded = [];
 
-    protected $hidden = ['updated_at'];
+    protected $hidden = [
+        'updated_at'
+    ];
 
-    protected $appends = ['online_users_count'];
+    protected $appends = [
+        'online_users_count'
+    ];
 
     protected $casts = [
-        'private' => 'boolean',
         'tags' => 'array',
-        'created_at' => 'date:d/m/Y'
+        'private' => 'boolean'
     ];
 
     public function getOnlineUsersCountAttribute()
@@ -62,6 +61,6 @@ class Channel extends Model
 
     protected static function getFilters()
     {
-        return [PrivateFilter::class];
+        return [PrivateFilter::class, WithoutMemberFilter::class];
     }
 }

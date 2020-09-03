@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Invite;
+namespace App\Http\Requests\FriendshipRequest;
 
+use App\Rules\FriendId;
 use App\Traits\AuthorizedRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateInviteRequest extends FormRequest
+class CreateFriendshipRequestRequest extends FormRequest
 {
     use AuthorizedRequest;
 
@@ -17,7 +18,7 @@ class CreateInviteRequest extends FormRequest
     public function rules()
     {
         return [
-            'invited_id' => 'required|exists:users,id'
+            'receiver_id' => ['required', 'exists:users,id', new FriendId()]
         ];
     }
 }

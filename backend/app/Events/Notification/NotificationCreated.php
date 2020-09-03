@@ -13,7 +13,7 @@ class NotificationCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $notification;
+    private $notification;
 
     /**
      * Create a new event instance.

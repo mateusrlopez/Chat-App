@@ -27,9 +27,12 @@ Route::apiResource('channels.invites', 'Channel\ChannelInviteController')->only(
 Route::apiResource('channels.users', 'Channel\ChannelUserController')->except('show');
 Route::apiResource('users', 'User\UserController')->except(['store', 'show']);
 Route::apiResource('users.channel', 'User\UserChannelController')->only('index');
-Route::apiResource('users.invites', 'User\UserInviteController')->only('index');
+Route::apiResource('users.invites-received', 'User\UserInviteReceivedController')->only('index');
+Route::apiResource('users.friends', 'User\UserFriendController')->only(['index', 'destroy']);
+Route::apiResource('users.friendship-requests-sent', 'User\UserFriendshipRequestSentController')->only('store');
+Route::apiResource('users.friendship-requests-received', 'User\UserFriendshipRequestReceivedController')->only('index');
+Route::apiResource('friendship-requests', 'FriendshipRequest\FriendshipRequestController')->only('destroy');
+Route::put('friendship-requests/{friendship_request}/accept', 'FriendshipRequest\FriendshipRequestController@accept');
 Route::apiResource('messages', 'Message\MessageController')->only(['update', 'destroy']);
 Route::apiResource('invites', 'Invite\InviteController')->only('destroy');
-Route::group(['prefix' => 'invites/{invite}'], function() {
-    Route::put('accept', 'Invite\InviteController@accept');
-});
+Route::put('invites/{invite}/accept', 'Invite\InviteController@accept');
