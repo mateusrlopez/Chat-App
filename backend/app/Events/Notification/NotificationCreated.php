@@ -42,6 +42,6 @@ class NotificationCreated implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        return ['id' => $this->notification->id, 'data' => $this->notification->data, 'created_at' => $this->notification->created_at];
+        return ['id' => $this->notification->id, 'data' => $this->notification->data, 'read_at' => null, 'created_at' => $this->notification->created_at];
     }
 }

@@ -4,40 +4,42 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\SingUpRequest;
+use App\Http\Requests\Auth\SignUpRequest;
+use App\JWT\JWTHandler;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 { 
-
-    public function __construct()
-    {
-        $this->middleware('auth')->only('logout');
-    }
-
     public function login(LoginRequest $request)
     {
-        if(!$token = Auth::attempt($request->validated()))
-            return response()->json(['errors' => 'Invalid credentials'], 422);
-
-        return response()->json(['token' => $token, 'user' => Auth::user()]);
+        if(!list('refreshToken' => $refreshToken, 'accessToken' => $accessToken) = Auth::attempt($request->validated())) {
+            return response()->json('Invalid credentials', 401);
+        }
+        
+        return response()->json(['access_token' => $accessToken, 'refresh_token' => $refreshToken, 'user' => Auth::user()]);
     }
 
-    public function logout()
+    public function refresh()
     {
-        Auth::logout();
-        return response()->json('', 204);
+        return response()->json(['access_token' => Auth::refresh()]);
     }
 
-    public function signUp(SingUpRequest $request)
+    public function signUp(SignUpRequest $request)
     {
         $validatedData = $request->validated();
+        $user = null;
+        $refreshToken = null;
+        $accessToken = null;
 
-        $user = User::create(Arr::only($validatedData, ['email', 'name', 'password']));
-        $token = Auth::login($user);
+        DB::transaction(function () use ($validatedData, &$user, &$refreshToken, &$accessToken) {    
+            $user = User::create(Arr::only($validatedData, ['email', 'name', 'password']));
+            $refreshToken = JWTHandler::generateRefreshToken($user->id);
+            $accessToken = JWTHandler::generateAccessToken($user->id);
+        });
 
-        return response()->json(['token' => $token, 'user' => $user], 201);
+        return response()->json(['access_token' => $accessToken, 'refresh_token' => $refreshToken, 'user' => $user], 201);
     }
 }

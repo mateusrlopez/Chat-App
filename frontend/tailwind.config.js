@@ -3,9 +3,11 @@ module.exports = {
   theme: {
     extend: {},
     fontFamily: {
-      sans: ['Quicksand', 'Arial', 'sans-serif']
+      body: ['Quicksand', 'Arial', 'sans-serif']
     }
   },
-  variants: {},
+  variants: {
+    opacity: ['responsive', 'hover', 'focus', 'disabled']
+  },
   plugins: [],
 }

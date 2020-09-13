@@ -1,11 +1,11 @@
 <template>
   <div class="w-full md:w-3/4 p-5 md:shadow-2xl bg-white md:rounded-lg">
-    <AlertBox v-if="errors" :message="errors" error @clear-alert="errors = null"/>
+    <AlertBox v-if="errors" :message="errors" alertType="error" @clear-alert="errors = null"/>
 
     <form @submit.prevent="submitResetPasswordForm">
       <div class="my-2">
         <label :class="['cursor-pointer', !$v.password.$error ? 'text-black' : 'text-red-500']" for="password">New password:</label>
-        <input :class="['w-full border', !$v.password.$error ? 'border-gray-700' : 'border-red-500', 'px-2', 'py-1', 'rounded', 'mt-1']" id="password]" type="password" v-model="password">
+        <input :class="['w-full border', !$v.password.$error ? 'border-gray-700' : 'border-red-500', 'px-2', 'py-1', 'rounded', 'mt-1']" id="password" type="password" v-model="password">
         <small class="text-red-500" v-if="$v.password.$error && !$v.password.required">Password is required</small>
         <small class="text-red-500" v-if="$v.password.$error && !$v.password.minLength">Password must have at least 8 characters</small>
       </div>

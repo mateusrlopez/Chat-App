@@ -1,4 +1,10 @@
 const state = {
+  channels: [],
+  friends: [],
+  friendshipRequests: [],
+  invites: [],
+  notifications: [],
+  user: null
 }
 
 const getters = {

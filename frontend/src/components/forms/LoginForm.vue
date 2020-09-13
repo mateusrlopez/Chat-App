@@ -1,6 +1,6 @@
 <template>
   <div class="w-full md:w-3/4 p-5 md:shadow-2xl bg-white md:rounded-lg">
-    <AlertBox v-if="errors" error :message="errors" @clear-alert="errors=null"/>
+    <AlertBox v-if="errors" alertType="error" :message="errors" @clear-alert="errors=null"/>
 
     <form @submit.prevent="submitLoginForm">
       <div class="my-2">

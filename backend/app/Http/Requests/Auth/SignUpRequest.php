@@ -5,7 +5,7 @@ namespace App\Http\Requests\Auth;
 use App\Traits\AuthorizedRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class SingUpRequest extends FormRequest
+class SignUpRequest extends FormRequest
 {
     use AuthorizedRequest;
 

@@ -7,6 +7,5 @@ You've requested a password reset for your account in our site, click the link b
 Reset password
 @endcomponent
 
-Regards,<br>
-{{ config('app.name') }}
+Regards, {{ config('app.name') }}
 @endcomponent

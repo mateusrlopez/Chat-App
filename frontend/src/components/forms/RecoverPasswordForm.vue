@@ -1,7 +1,7 @@
 <template>
   <div class="w-full md:w-3/4 p-5 md:shadow-2xl bg-white md:rounded-lg">
-    <AlertBox v-if="success" :message="success" success @clear-alert="success = null"/>
-    <AlertBox v-if="errors" :message="errors" error @clear-alert="errors = null"/>
+    <AlertBox v-if="success" :message="success" alertType="success" @clear-alert="success = null"/>
+    <AlertBox v-if="errors" :message="errors" alertType="error" @clear-alert="errors = null"/>
 
     <form @submit.prevent="submitRecoverPasswordForm">
       <div class="mt-2 mb-4">
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import { required, email } from 'vuelidate/lib/validators'
 import api from '@/services/api'
 
@@ -39,16 +40,23 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+      'alterLoading'
+    ]),
     submitRecoverPasswordForm () {
       this.$v.$touch()
 
       if (!this.$v.$invalid) {
+        this.alterLoading()
         api.post('/auth/request-password-reset', { email: this.email })
           .then(response => {
             this.success = response.data
           })
           .catch(error => {
             this.errors = error.response.data.errors
+          })
+          .finally(() => {
+            this.alterLoading()
           })
       }
     }

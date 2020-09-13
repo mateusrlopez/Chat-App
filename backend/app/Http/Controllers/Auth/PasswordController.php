@@ -24,18 +24,19 @@ class PasswordController extends Controller
 
     public function resetPassword(ResetPasswordRequest $request)
     {
-        $jwtToken = null;
+        $authUser = null;
         $validatedData = $request->validated();
 
-        $response = $this->broker()->reset(Arr::only($validatedData, ['email', 'password', 'token']), function($user, $password) use (&$jwtToken) {
+        $response = $this->broker()->reset(Arr::only($validatedData, ['email', 'password', 'token']), function($user, $password) use (&$authUser) {
             $user->password = $password;
             $user->save();
-
-            $jwtToken = Auth::login($user);
+            $authUser = $user;
         });
 
+        list($refreshToken, $accessToken) = Auth::login($authUser);
+
         return $response === Password::PASSWORD_RESET ?
-            response()->json(['token' => $jwtToken, 'user' => Auth::user()]) :
+            response()->json(['access_token' => $accessToken, 'refresh_token' => $refreshToken, 'user' => $authUser]) :
             response()->json(['errors' => 'Error during password reset'], 400);
     }
 

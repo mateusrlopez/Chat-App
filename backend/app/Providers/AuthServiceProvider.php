@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\JWT\JWTGuard;
 use App\Models\Channel;
 use App\Models\FriendshipRequest;
 use App\Models\Invite;
@@ -13,6 +14,7 @@ use App\Policies\InvitePolicy;
 use App\Policies\MessagePolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -37,5 +39,6 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+        Auth::extend('jwt', fn($app, $name, array $config) => new JWTGuard(Auth::createUserProvider($config['provider']), $app->make('request')));
     }
 }

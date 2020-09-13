@@ -11,6 +11,7 @@ const actions = {
 
 const mutations = {
   setChannelsList (state, channels) {
+    state.channels = channels
   }
 }
 

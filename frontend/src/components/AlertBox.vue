@@ -1,7 +1,7 @@
 <template>
-  <div :class="['alert', { 'error-alert': error, 'success-alert': success }]">
+  <div :class="['alert', `${alertType}-alert`]">
     <span>{{ message }}</span>
-    <button class="float-right" @click="$emit('clear-alert')"><i class="fas fa-times fa-sm"></i></button>
+    <button class="absolute right-0 top-0 bottom-0 pr-3" @click="$emit('clear-alert')"><i class="fas fa-times fa-sm"></i></button>
   </div>
 </template>
 
@@ -12,13 +12,12 @@ export default {
       type: String,
       required: true
     },
-    success: {
-      type: Boolean,
-      required: false
-    },
-    error: {
-      type: Boolean,
-      required: false
+    alertType: {
+      type: String,
+      required: true,
+      validator (value) {
+        return ['error', 'success'].indexOf(value) !== -1
+      }
     }
   }
 }
@@ -26,7 +25,7 @@ export default {
 
 <style scoped>
   .alert {
-    @apply border p-2 rounded text-center;
+    @apply border p-2 rounded text-center relative;
   }
 
   .error-alert {

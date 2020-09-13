@@ -2,7 +2,10 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\UnauthorizedException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -36,6 +39,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
+        Log::error($exception->getMessage());
         parent::report($exception);
     }
 

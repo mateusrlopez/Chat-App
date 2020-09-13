@@ -1,11 +1,12 @@
 import Echo from 'laravel-echo'
-import io from 'socket.io-client'
+import pusher from 'pusher-js'
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import api from './services/api'
 
 import '@/assets/css/style.css'
 import '@fortawesome/fontawesome-free/css/all.css'
@@ -15,12 +16,20 @@ Vue.config.productionTip = false
 
 Vue.use(Vuelidate)
 
-window.io = io
+window.Pusher = pusher
+
 window.Echo = new Echo({
-  broadcaster: 'socket.io',
-  host: window.location.hostname,
-  enabledTransports: ['websocket']
+  broadcaster: 'pusher',
+  key: process.env.VUE_APP_PUSHER_KEY,
+  wsHost: window.location.hostname,
+  enabledTransports: ['ws'],
+  forceTLS: false,
+  disableStats: true,
+  encrypted: false
 })
+
+window.Echo.connector.options.auth.headers.Authorization = `Bearer ${window.localStorage.getItem('access_token')}`
+api.defaults.headers.common.Authorization = `Bearer ${window.localStorage.getItem('access_token')}`
 
 new Vue({
   router,
