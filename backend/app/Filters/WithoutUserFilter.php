@@ -2,7 +2,7 @@
 
 namespace App\Filters;
 
-class WithoutMemberFilter extends BaseFilter
+class WithoutUserFilter extends BaseFilter
 {
     protected function applyFilter($builder)
     {

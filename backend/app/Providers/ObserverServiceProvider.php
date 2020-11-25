@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\FriendshipRequest;
 use App\Models\Invite;
+use App\Models\User;
 use App\Observers\FriendshipRequestObserver;
 use App\Observers\InviteObserver;
+use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
 
 class ObserverServiceProvider extends ServiceProvider
@@ -29,5 +31,6 @@ class ObserverServiceProvider extends ServiceProvider
     {
         FriendshipRequest::observe(FriendshipRequestObserver::class);
         Invite::observe(InviteObserver::class);
+        User::observe(UserObserver::class);
     }
 }

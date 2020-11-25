@@ -14,6 +14,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'auth'], function () {
+    Route::get('/me', 'Auth\AuthController@me')->middleware('jwt.auth');
     Route::get('/refresh', 'Auth\AuthController@refresh')->middleware('token.refresh');
     Route::post('/login', 'Auth\AuthController@login');
     Route::post('/sign-up', 'Auth\AuthController@signUp');
@@ -22,17 +23,23 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::apiResource('channels', 'Channel\ChannelController');
+Route::apiResource('channels.administrators', 'Channel\ChannelAdministratorsController')->only('index');
 Route::apiResource('channels.messages', 'Channel\ChannelMessageController')->only(['index', 'store']);
 Route::apiResource('channels.invites', 'Channel\ChannelInviteController')->only(['index', 'store']);
 Route::apiResource('channels.users', 'Channel\ChannelUserController')->except('show');
+
 Route::apiResource('friendship-requests', 'FriendshipRequest\FriendshipRequestController')->only('destroy');
 Route::put('friendship-requests/{friendship_request}/accept', 'FriendshipRequest\FriendshipRequestController@accept');
+
 Route::apiResource('invites', 'Invite\InviteController')->only('destroy');
 Route::put('invites/{invite}/accept', 'Invite\InviteController@accept');
+
 Route::apiResource('messages', 'Message\MessageController')->only(['update', 'destroy']);
+
 Route::apiResource('notifications', 'Notification\NotificationController')->only('update');
+
 Route::apiResource('users', 'User\UserController')->except(['store', 'show']);
-Route::apiResource('users.channel', 'User\UserChannelController')->only('index');
+Route::apiResource('users.channels', 'User\UserChannelController')->only('index');
 Route::apiResource('users.invites-received', 'User\UserInviteReceivedController')->only('index');
 Route::apiResource('users.friends', 'User\UserFriendController')->only(['index', 'destroy']);
 Route::apiResource('users.friendship-requests-sent', 'User\UserFriendshipRequestSentController')->only('store');

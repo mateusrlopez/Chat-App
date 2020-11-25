@@ -37,7 +37,7 @@ class User extends Authenticatable
     
     public function channels()
     {
-        return $this->belongsToMany(Channel::class)->withPivot(['admin', 'last_activity'])->withTimestamps()->using(UserChannel::class);
+        return $this->belongsToMany(Channel::class, 'user_channel')->withPivot(['admin', 'last_activity'])->withTimestamps()->using(UserChannel::class);
     }
 
     public function notifications()

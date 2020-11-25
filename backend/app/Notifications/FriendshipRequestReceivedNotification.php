@@ -42,8 +42,9 @@ class FriendshipRequestReceivedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title' => '',
-            'message' => ''
+            'title' => 'New friend request',
+            'message' => "You have received a new friend request by: {$this->friendshiRequest->sender->name}",
+            'avatar' => $this->friendshipRequest->sender->profile_photo_url
         ];
     }
 }

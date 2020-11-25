@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ResetPasswordRequest;
+use App\JWT\JWTHandler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 
 class PasswordController extends Controller
@@ -24,7 +24,7 @@ class PasswordController extends Controller
 
     public function resetPassword(ResetPasswordRequest $request)
     {
-        $authUser = null;
+        $authUser = new \stdClass;
         $validatedData = $request->validated();
 
         $response = $this->broker()->reset(Arr::only($validatedData, ['email', 'password', 'token']), function($user, $password) use (&$authUser) {
@@ -33,10 +33,10 @@ class PasswordController extends Controller
             $authUser = $user;
         });
 
-        list($refreshToken, $accessToken) = Auth::login($authUser);
+        JWTHandler::updateRefreshToken($authUser->id);
 
         return $response === Password::PASSWORD_RESET ?
-            response()->json(['access_token' => $accessToken, 'refresh_token' => $refreshToken, 'user' => $authUser]) :
+            response()->json('Password reseted successfully') :
             response()->json(['errors' => 'Error during password reset'], 400);
     }
 

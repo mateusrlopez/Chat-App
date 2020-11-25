@@ -42,8 +42,9 @@ class InviteReceivedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title' => '',
-            'message' => ''
+            'title' => 'New channel invite',
+            'message' => "{$this->invite->inviter->name} invited you to join the channel: {$this->invite->channel->name}.",
+            'avatar' => $this->invite->inviter->profile_photo_url
         ];
     }
 }

@@ -3,21 +3,16 @@ const state = {
   friends: [],
   friendshipRequests: [],
   invites: [],
-  notifications: [],
   user: null
 }
 
-const getters = {
-}
+const getters = {}
 
-const actions = {
-}
+const actions = {}
 
-const mutations = {
-}
+const mutations = {}
 
 export default {
-  namespaced: true,
   state,
   getters,
   actions,

@@ -39,7 +39,6 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-        Log::error($exception->getMessage());
         parent::report($exception);
     }
 

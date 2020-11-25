@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+import store from '../store'
+import { getToken } from '../services/auth'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -9,6 +12,13 @@ const routes = [
     meta: { private: true },
     name: 'Home',
     component: () => import('@/views/Home.vue')
+  },
+  {
+    path: '/search',
+    meta: { private: true },
+    name: 'Search',
+    props: route => ({ q: route.query.q }),
+    component: () => import('@/views/Search.vue')
   },
   {
     path: '/channel/:id(\\d+)',
@@ -61,15 +71,17 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const routes = to.matched.some(val => val.meta.private)
-
-  if (!routes && window.localStorage.getItem('access_token')) {
-    next('/home')
-  } else if (routes && !window.localStorage.getItem('access_token')) {
-    next('/')
-  } else {
-    next()
-  }
+  Promise.all([store.dispatch('checkAuth')])
+    .then(() => {
+      const privateRoutes = to.matched.some(val => val.meta.private)
+      if (!privateRoutes && getToken('access') && getToken('refresh')) {
+        next('/home')
+      } else if (privateRoutes && !getToken('access') && !getToken('refresh')) {
+        next('/')
+      } else {
+        next()
+      }
+    })
 })
 
 export default router

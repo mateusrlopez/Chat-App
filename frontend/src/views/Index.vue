@@ -1,11 +1,54 @@
 <template>
-  <div class="flex flex-col justify-evenly h-screen md:flex-row bg-gradient-to-l">
-    <div class="w-full md:w-1/2 flex flex-col justify-center items-center">
-      <h1 class="text-6xl">SpaceChat</h1>
-      <p class="text-lg text-center">Chat with your friends, find new friends</p>
-    </div>
-    <div class="w-full md:w-1/2 flex justify-center items-center">
-      <router-view />
-    </div>
-  </div>
+  <v-container
+    class="tw-h-screen"
+  >
+    <v-row
+      class="tw-h-full"
+    >
+      <v-col
+        cols="12"
+        md="6"
+      >
+        <v-row
+          justify="center"
+          align="center"
+          class="tw-h-full"
+        >
+          <div>
+            <h1
+              class="tw-text-6xl"
+            >
+              SpaceChat
+            </h1>
+            <span
+              class="tw-text-lg"
+            >
+              Chat with your friends, find new friends
+            </span>
+          </div>
+        </v-row>
+      </v-col>
+      <v-col
+        cols="12"
+        md="6"
+      >
+        <v-row
+          justify="center"
+          align="center"
+          class="tw-h-full"
+        >
+          <v-col
+            cols="12"
+            md="10"
+          >
+            <v-card
+              class="tw-p-2"
+            >
+              <router-view></router-view>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>

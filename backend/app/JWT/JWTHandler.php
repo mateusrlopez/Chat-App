@@ -12,7 +12,7 @@ class JWTHandler implements JWTHandlerInterface
     static function generateAccessToken($userId) 
     {
         $payload = [
-            'exp' => time() + 300,
+            'exp' => time() + 86400,
             'iat' => time(),
             'iss' => request()->url(),
             'sub' => $userId
@@ -32,8 +32,6 @@ class JWTHandler implements JWTHandlerInterface
         $token = JWT::encode($payload, env('JWT_SECRET'));
         
         DB::table('refresh_tokens')->insert(['user_id' => $userId, 'token' => $token]);
-
-        return $token;
     }
 
     static public function getUserRefreshToken($userId)

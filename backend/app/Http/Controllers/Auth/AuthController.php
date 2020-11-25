@@ -9,6 +9,7 @@ use App\JWT\JWTHandler;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
@@ -18,13 +19,20 @@ class AuthController extends Controller
         if(!list('refreshToken' => $refreshToken, 'accessToken' => $accessToken) = Auth::attempt($request->validated())) {
             return response()->json('Invalid credentials', 401);
         }
-        
-        return response()->json(['access_token' => $accessToken, 'refresh_token' => $refreshToken, 'user' => Auth::user()]);
+
+        Cache::forget('user.'.Auth::id());
+
+        return response()->json(['accessToken' => $accessToken, 'refreshToken' => $refreshToken, 'user' => Auth::user()]);
+    }
+
+    public function me()
+    {
+        return response()->json(['user' => Cache::remember('user.'.Auth::id(), 3600, fn() => Auth::user())]);
     }
 
     public function refresh()
     {
-        return response()->json(['access_token' => Auth::refresh()]);
+        return response()->json(['accessToken' => Auth::refresh()]);
     }
 
     public function signUp(SignUpRequest $request)
@@ -36,10 +44,10 @@ class AuthController extends Controller
 
         DB::transaction(function () use ($validatedData, &$user, &$refreshToken, &$accessToken) {    
             $user = User::create(Arr::only($validatedData, ['email', 'name', 'password']));
-            $refreshToken = JWTHandler::generateRefreshToken($user->id);
+            $refreshToken = JWTHandler::getUserRefreshToken($user->id);
             $accessToken = JWTHandler::generateAccessToken($user->id);
         });
 
-        return response()->json(['access_token' => $accessToken, 'refresh_token' => $refreshToken, 'user' => $user], 201);
+        return response()->json(['accessToken' => $accessToken, 'refreshToken' => $refreshToken, 'user' => $user], 201);
     }
 }

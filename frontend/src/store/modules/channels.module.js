@@ -1,22 +1,34 @@
+import api from '@/services/api'
+
 const state = {
-  channelsList: []
+  administrators: [],
+  channel: null,
+  invites: [],
+  messages: [],
+  users: []
 }
 
 const getters = {
-  getChannelsList: state => state.channelsList
 }
 
 const actions = {
-}
-
-const mutations = {
-  setChannelsList (state, channels) {
-    state.channels = channels
+  createChannel ({ getters }, { name, isPrivate, tags, description }) {
+    return new Promise((resolve, reject) => {
+      api.post('/channels', { name, private: isPrivate, tags, description, owner_id: getters.authId })
+        .then(response => {
+          resolve(response)
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 
+const mutations = {
+}
+
 export default {
-  namespaced: true,
   state,
   getters,
   actions,

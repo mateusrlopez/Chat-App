@@ -1,10 +1,16 @@
 <template>
-  <div>
-  </div>
+  <v-container>
+    <Navbar />
+  </v-container>
 </template>
 
 <script>
+import Navbar from '@/components/Navbar'
+
 export default {
+  components: {
+    Navbar
+  },
   props: {
     id: {
       type: Number,

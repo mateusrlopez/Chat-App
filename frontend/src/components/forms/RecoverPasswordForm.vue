@@ -1,36 +1,83 @@
 <template>
-  <div class="w-full md:w-3/4 p-5 md:shadow-2xl bg-white md:rounded-lg">
-    <AlertBox v-if="success" :message="success" alertType="success" @clear-alert="success = null"/>
-    <AlertBox v-if="errors" :message="errors" alertType="error" @clear-alert="errors = null"/>
+  <v-container>
+    <v-alert
+      dark
+      dismissible
+      tile
+      border="left"
+      color="#E3242B"
+      class="alert"
+      v-if="hasError"
+      v-model="hasError"
+    >
+      <span>{{ errors }}</span>
+    </v-alert>
 
-    <form @submit.prevent="submitRecoverPasswordForm">
-      <div class="mt-2 mb-4">
-        <label :class="['block', 'cursor-pointer', !$v.email.$error ? 'text-black' : 'text-red-500']" for="email">Enter your account email:</label>
-        <input :class="['w-full', 'border', !$v.email.$error ? 'border-gray-700' : 'border-red-500', 'px-2', 'py-1', 'rounded', 'mt-1']" id="email" type="text" v-model="email">
-        <small class="text-red-500" v-if="$v.email.$error && !$v.email.required">Email is required</small>
-        <small class="text-red-500" v-if="$v.email.$error && !$v.email.email">Enter a valid email</small>
-      </div>
+    <v-alert
+      dark
+      dismissible
+      tile
+      border="left"
+      color="#028A0F"
+      class="alert"
+      v-if="isSuccess"
+      v-model="isSuccess"
+    >
+      <span>{{ success }}</span>
+    </v-alert>
 
-      <LoadingButton label="Request" class="w-full p-1 bg-teal-500 text-white rounded hover:bg-teal-600" type="submit" />
-    </form>
-  </div>
+    <v-form
+      @submit.prevent="submitRecoverPasswordForm"
+    >
+      <v-text-field
+        outlined
+        label="Enter your account's email"
+        v-model="email"
+        :error="$v.email.$error"
+        :error-messages="emailErrors"
+      >
+      </v-text-field>
+
+      <v-btn
+        block
+        dark
+        tile
+        color="teal"
+        type="submit"
+        :loading="isLoading"
+      >
+        Request password reset
+      </v-btn>
+    </v-form>
+  </v-container>
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
 import { required, email } from 'vuelidate/lib/validators'
 import api from '@/services/api'
 
 export default {
-  components: {
-    AlertBox: () => import('@/components/AlertBox.vue'),
-    LoadingButton: () => import('@/components/LoadingButton.vue')
-  },
   data () {
     return {
       email: '',
       errors: null,
+      hasErrors: false,
+      isSuccess: false,
       success: null
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'isLoading'
+    ]),
+    emailErrors () {
+      const errors = []
+      if (this.$v.email.$error) {
+        !this.$v.email.required && errors.push('Email is required')
+        !this.$v.email.email && errors.push('Enter a valid email')
+      }
+      return errors
     }
   },
   validations: {
@@ -45,14 +92,15 @@ export default {
     ]),
     submitRecoverPasswordForm () {
       this.$v.$touch()
-
       if (!this.$v.$invalid) {
         this.alterLoading()
         api.post('/auth/request-password-reset', { email: this.email })
           .then(response => {
+            this.isSuccess = true
             this.success = response.data
           })
           .catch(error => {
+            this.hasErrors = true
             this.errors = error.response.data.errors
           })
           .finally(() => {

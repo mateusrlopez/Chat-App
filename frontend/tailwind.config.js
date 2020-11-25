@@ -1,13 +1,10 @@
 module.exports = {
+  prefix: 'tw-',
   purge: [],
   theme: {
-    extend: {},
-    fontFamily: {
-      body: ['Quicksand', 'Arial', 'sans-serif']
-    }
+    extend: {}
   },
   variants: {
-    opacity: ['responsive', 'hover', 'focus', 'disabled']
   },
-  plugins: [],
+  plugins: []
 }

@@ -23,7 +23,7 @@ class JWTGuard implements Guard
 
     public function check()
     {
-        return !isNull($this->user());
+        return !is_null($this->user());
     }
 
     public function guest()
@@ -40,7 +40,6 @@ class JWTGuard implements Guard
     {
         return $this->check() ? $this->user()->getAuthIdentifier() : null;
     }
-
     
     public function validate(array $credentials = [])
     {
@@ -50,8 +49,11 @@ class JWTGuard implements Guard
     
     public function attempt(array $credentials)
     {
-        $user = $this->provider->retrieveByCredentials($credentials);
-        return $user ? $this->login($user) : false;
+        if($this->validate($credentials)) {
+            $user = $this->provider->retrieveByCredentials($credentials);
+            return $user ? $this->login($user) : false;
+        }
+        return false;
     }
     
     public function login(Authenticatable $user)

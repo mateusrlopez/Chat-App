@@ -1,35 +1,77 @@
 <template>
-  <div class="w-full md:w-3/4 p-5 md:shadow-2xl bg-white md:rounded-lg">
-    <AlertBox v-if="errors" :message="errors" alertType="error" @clear-alert="errors = null"/>
+  <v-container>
+    <v-alert
+      dark
+      dismissible
+      tile
+      border="left"
+      color="#E3242B"
+      class="alert"
+      v-if="hasError"
+      v-model="hasError"
+    >
+      <span>{{ errors }}</span>
+    </v-alert>
 
-    <form @submit.prevent="submitResetPasswordForm">
-      <div class="my-2">
-        <label :class="['cursor-pointer', !$v.password.$error ? 'text-black' : 'text-red-500']" for="password">New password:</label>
-        <input :class="['w-full border', !$v.password.$error ? 'border-gray-700' : 'border-red-500', 'px-2', 'py-1', 'rounded', 'mt-1']" id="password" type="password" v-model="password">
-        <small class="text-red-500" v-if="$v.password.$error && !$v.password.required">Password is required</small>
-        <small class="text-red-500" v-if="$v.password.$error && !$v.password.minLength">Password must have at least 8 characters</small>
-      </div>
-      <div class="mt-2 mb-4">
-        <label :class="['cursor-pointer', !$v.password_confirmation.$error ? 'text-black' : 'text-red-500']" for="password_confirmation">Confirm your new password:</label>
-        <input :class="['w-full', 'border', !$v.password_confirmation.$error ? 'border-gray-700' : 'border-red-500', 'px-2', 'py-1', 'rounded', 'mt-1']" id="password_confirmation" type="password" v-model="password_confirmation">
-        <small class="text-red-500" v-if="$v.password_confirmation.$error && !$v.password_confirmation.required">You must confirm your password</small>
-        <small class="text-red-500" v-if="$v.password_confirmation.$error && !$v.password_confirmation.sameAs">Passwords don't match</small>
-      </div>
+    <v-alert
+      dark
+      dismissible
+      tile
+      border="left"
+      color="#028A0F"
+      class="alert"
+      v-if="isSuccess"
+      v-model="isSuccess"
+    >
+      <span>{{ success }}</span>
+    </v-alert>
 
-      <LoadingButton label="Reset Password" class="w-full p-1 bg-teal-500 text-white rounded hover:bg-teal-600" type="submit" />
-    </form>
-  </div>
+    <v-form
+      @submit.prevent="submitResetPasswordForm"
+    >
+      <v-text-field
+        outlined
+        label="New password"
+        v-model="password"
+        :error="$v.password.$error"
+        :error-messages="passwordErrors"
+        :append-icon="showPassword ? 'visibility_off' : 'visibility'"
+        :type="showPassword ? 'text' : 'password'"
+        @click:append="showPassword = !showPassword"
+      ></v-text-field>
+
+      <v-text-field
+        outlined
+        label="Confirm your new password"
+        v-model="password_confirmation"
+        :error="$v.password_confirmation.$error"
+        :error-messages="passwordConfirmationErrors"
+        :append-icon="showPasswordConfirmation ? 'visibility_off' : 'visibility'"
+        :type="showPasswordConfirmation ? 'text' : 'password'"
+        @click:append="showPasswordConfirmation = !showPasswordConfirmation"
+      ></v-text-field>
+
+      <v-btn
+        block
+        dark
+        tile
+        color="teal"
+        class="tw-mt-2"
+        type="submit"
+        :loading="isLoading"
+      >
+        Reset password
+      </v-btn>
+    </v-form>
+  </v-container>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { required, sameAs, minLength } from 'vuelidate/lib/validators'
+import api from '@/services/api'
 
 export default {
-  components: {
-    AlertBox: () => import('@/components/AlertBox.vue'),
-    LoadingButton: () => import('@/components/LoadingButton.vue')
-  },
   props: {
     email: {
       type: String,
@@ -44,7 +86,33 @@ export default {
     return {
       password: '',
       password_confirmation: '',
-      errors: null
+      hasErrors: false,
+      isSuccess: false,
+      errors: null,
+      success: null,
+      showPassword: false,
+      showPasswordConfirmation: false
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'isLoading'
+    ]),
+    passwordErrors () {
+      const errors = []
+      if (this.$v.password.$error) {
+        !this.$v.password.required && errors.push('A new password is required')
+        !this.$v.password.minLength && errors.push('The new password must have at least 8 characters')
+      }
+      return errors
+    },
+    passwordConfirmationErrors () {
+      const errors = []
+      if (this.$v.password_confirmation.$error) {
+        !this.$v.password_confirmation.required && errors.push('You must confirm your new password')
+        !this.$v.password.sameAs && errors.push('Passwords must match')
+      }
+      return errors
     }
   },
   validations: {
@@ -59,18 +127,23 @@ export default {
   },
   methods: {
     ...mapActions([
-      'resetPassword'
+      'alterLoading'
     ]),
     submitResetPasswordForm () {
       this.$v.$touch()
-
       if (!this.$v.$invalid) {
-        this.resetPassword({ email: this.email, token: this.token, password: this.password, password_confirmation: this.password_confirmation })
-          .then(() => {
-            this.$router.push('/home')
+        this.alterLoading()
+        api.post('/auth/reset-password', { email: this.email, token: this.token, password: this.password, password_confirmation: this.password_confirmation })
+          .then(response => {
+            this.isSuccess = true
+            this.success = response.data
           })
           .catch(error => {
+            this.hasErrors = true
             this.errors = error.response.data.errors
+          })
+          .finally(() => {
+            this.alterLoading()
           })
       }
     }

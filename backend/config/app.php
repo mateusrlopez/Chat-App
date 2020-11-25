@@ -175,6 +175,7 @@ return [
         App\Providers\CommonMarkServiceProvider::class,
         App\Providers\EloquentServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\ObserverServiceProvider::class,
         App\Providers\RouteServiceProvider::class
 
     ],

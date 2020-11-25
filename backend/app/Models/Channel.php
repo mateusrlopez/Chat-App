@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Filters\FriendChannels;
-use App\Filters\WithoutMemberFilter;
+use App\Filters\LimitFilter;
+use App\Filters\OrderByFilter;
+use App\Filters\WithoutUserFilter;
 use App\Filters\PrivateFilter;
 use App\Models\Pivot\UserChannel;
 use App\Traits\Filterable;
@@ -51,6 +53,12 @@ class Channel extends Model
 
     protected static function getFilters()
     {
-        return [FriendChannels::class, PrivateFilter::class, WithoutMemberFilter::class];
+        return [
+            FriendChannels::class, 
+            LimitFilter::class,
+            PrivateFilter::class,
+            OrderByFilter::class, 
+            WithoutUserFilter::class
+        ];
     }
 }
